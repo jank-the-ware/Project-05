@@ -13,6 +13,7 @@ public class MazeGenerator : MonoBehaviour
     public GameObject[] tiles;
 
     public GameObject player;
+    public GameObject enemy;
 
     const int N = 1;
     const int E = 2;
@@ -42,7 +43,7 @@ public class MazeGenerator : MonoBehaviour
         MakeMaze();
 
         GameObject p = GameObject.Instantiate(player);
-        p.transform.position = new Vector3(2.91f, 1f, 4.6f);
+        p.transform.position = new Vector3(-20f, -8f, 5f);
     }
 
     private List<Vector2> CheckNeighbors(Vector2 cell, List<Vector2> unvisited) {
@@ -94,7 +95,6 @@ public class MazeGenerator : MonoBehaviour
                 int current_walls = map[(int)current.x][(int)current.y] - cell_walls[dir];
 
                 int next_walls = map[(int)next.x][(int)next.y] - cell_walls[-dir];
-
                 map[(int)current.x][(int)current.y] = current_walls;
 
                 map[(int)next.x][(int)next.y] = next_walls;
@@ -114,20 +114,26 @@ public class MazeGenerator : MonoBehaviour
 
         for (int i = 0; i < width; i++)
         {
-            
+
             for (int j = 0; j < height; j++)
             {
-                GameObject tile = GameObject.Instantiate(tiles[map[i][j]]);
-                tile.transform.parent = gameObject.transform;
+                if ((i > 0 && j < height-1) || (i < width - 1 && j > 0))
+                {
+                    GameObject tile = GameObject.Instantiate(tiles[map[i][j]]);
+                    tile.transform.parent = gameObject.transform;
 
-                tile.transform.Translate(new Vector3 (j*tile_size, 0, i * tile_size));
-                tile.name += " " + i.ToString() + ' ' + j.ToString();
-                tile.GetComponentInChildren<NavMeshSurface>().BuildNavMesh();
-               
+                    tile.transform.Translate(new Vector3(j * tile_size, 0, i * tile_size));
+                    tile.name += " " + i.ToString() + ' ' + j.ToString();
+                    tile.GetComponentInChildren<NavMeshSurface>().BuildNavMesh();
+                    /*if (j==4 || j==9)
+                    {
+                        GameObject e = GameObject.Instantiate(enemy);
+                        e.transform.position = new Vector3(0, 0, 0);
+                    }*/
+                }
             }
-
         }
-
+        
     }
 
     
